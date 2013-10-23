@@ -1,16 +1,13 @@
 require "bundler/gem_tasks"
 require "rspec/core/rake_task"
+require 'rdoc/task'
 
 RSpec::Core::RakeTask.new(:rspec)
 
 RSpec::Core::RakeTask.new(:rcov) do |spec|
-  spec.pattern = 'spec/**/*_spec.rb'
-  spec.rcov = true
+  ENV['COVERAGE'] = 'true'
+  Rake::Task["rspec"].execute
 end
-
-task :default => :rspec
-
-require 'rdoc/task'
 
 Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
@@ -20,3 +17,5 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+task :default => :rspec
