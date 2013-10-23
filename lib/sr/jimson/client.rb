@@ -1,10 +1,10 @@
 require 'multi_json'
 require 'rest-client'
-require 'jimson/blankslate'
-require 'jimson/request'
-require 'jimson/response'
+require 'sr/jimson/blankslate'
+require 'sr/jimson/request'
+require 'sr/jimson/response'
 
-module Jimson
+module Sr::Jimson
   class ClientHelper
     JSON_RPC_VERSION = '2.0'
 
@@ -138,7 +138,7 @@ module Jimson
     end
 
     def method_missing(sym, *args, &block)
-      request = Jimson::Request.new(sym.to_s, args)
+      request = Sr::Jimson::Request.new(sym.to_s, args)
       @helper.push_batch_request(request)
     end
 
@@ -177,4 +177,4 @@ module Jimson
   end
 end
 
-require 'jimson/client/error'
+require 'sr/jimson/client/error'

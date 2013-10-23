@@ -1,4 +1,4 @@
-module Jimson
+module Sr::Jimson
   class Client
     module Error
       class InvalidResponse < StandardError

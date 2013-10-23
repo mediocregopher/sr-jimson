@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module Jimson
+module Sr::Jimson
   describe Client do
     BOILERPLATE = {'jsonrpc' => '2.0', 'id' => 1}
 
@@ -14,11 +14,11 @@ module Jimson
 
     describe "hidden methods" do
       it "should reveal inspect" do
-        Client.new(SPEC_URL).inspect.should match /Jimson::Client/
+        Client.new(SPEC_URL).inspect.should match /Sr::Jimson::Client/
       end
 
       it "should reveal to_s" do
-        Client.new(SPEC_URL).to_s.should match /Jimson::Client/
+        Client.new(SPEC_URL).to_s.should match /Sr::Jimson::Client/
       end
     end
 
@@ -154,7 +154,7 @@ module Jimson
         client = Client.new(SPEC_URL)
 
         sum = subtract = foo = data = nil
-        Jimson::Client.batch(client) do |batch|
+        Sr::Jimson::Client.batch(client) do |batch|
           sum = batch.sum(1,2,4)
           subtract = batch.subtract(42,23)
           foo = batch.foo_get('name' => 'myself')
@@ -176,13 +176,13 @@ module Jimson
     end
 
     describe "error handling" do
-      context "when an error occurs in the Jimson::Client code" do
-        it "tags the raised exception with Jimson::Client::Error" do
+      context "when an error occurs in the Sr::Jimson::Client code" do
+        it "tags the raised exception with Sr::Jimson::Client::Error" do
           client_helper = ClientHelper.new(SPEC_URL)
           ClientHelper.stub(:new).and_return(client_helper)
           client = Client.new(SPEC_URL)
           client_helper.stub(:send_single_request).and_raise "intentional error"
-          lambda { client.foo }.should raise_error(Jimson::Client::Error)
+          lambda { client.foo }.should raise_error(Sr::Jimson::Client::Error)
         end
       end
     end

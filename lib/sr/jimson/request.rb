@@ -1,4 +1,4 @@
-module Jimson
+module Sr::Jimson
   class Request
 
     attr_accessor :method, :params, :id
