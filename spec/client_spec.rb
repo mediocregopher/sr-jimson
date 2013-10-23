@@ -5,8 +5,8 @@ module Jimson
     BOILERPLATE = {'jsonrpc' => '2.0', 'id' => 1}
 
     before(:each) do
-      @resp_mock = mock('http_response')
-      ClientHelper.stub!(:make_id).and_return(1)
+      @resp_mock = double('http_response')
+      ClientHelper.stub(:make_id).and_return(1)
     end
 
     after(:each) do
@@ -138,7 +138,7 @@ module Jimson
           {"jsonrpc" => "2.0", "method" => "sum", "params" => [1,2,4], "id" => "1"},
           {"jsonrpc" => "2.0", "method" => "subtract", "params" => [42,23], "id" => "2"},
           {"jsonrpc" => "2.0", "method" => "foo_get", "params" => [{"name" => "myself"}], "id" => "5"},
-          {"jsonrpc" => "2.0", "method" => "get_data", "id" => "9"} 
+          {"jsonrpc" => "2.0", "method" => "get_data", "id" => "9"}
         ])
 
         response = MultiJson.encode([
@@ -148,7 +148,7 @@ module Jimson
           {"jsonrpc" => "2.0", "result" => ["hello", 5], "id" => "9"}
         ])
 
-        ClientHelper.stub!(:make_id).and_return('1', '2', '5', '9')
+        ClientHelper.stub(:make_id).and_return('1', '2', '5', '9')
         RestClient.should_receive(:post).with(SPEC_URL, batch, {:content_type => 'application/json'}).and_return(@resp_mock)
         @resp_mock.should_receive(:body).at_least(:once).and_return(response)
         client = Client.new(SPEC_URL)
@@ -179,9 +179,9 @@ module Jimson
       context "when an error occurs in the Jimson::Client code" do
         it "tags the raised exception with Jimson::Client::Error" do
           client_helper = ClientHelper.new(SPEC_URL)
-          ClientHelper.stub!(:new).and_return(client_helper)
+          ClientHelper.stub(:new).and_return(client_helper)
           client = Client.new(SPEC_URL)
-          client_helper.stub!(:send_single_request).and_raise "intentional error"
+          client_helper.stub(:send_single_request).and_raise "intentional error"
           lambda { client.foo }.should raise_error(Jimson::Client::Error)
         end
       end
