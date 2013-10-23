@@ -1,6 +1,19 @@
 # Jimson
+
 ### JSON-RPC 2.0 Client and Server for Ruby
-![next build status](https://secure.travis-ci.org/chriskite/jimson.png?branch=next)
+[![Build Status](https://travis-ci.org/speedyrails/sr-jimson.png?branch=staging)](https://travis-ci.org/speedyrails/sr-jimson)
+
+## Why the fork
+
+This is a customized version of the `jimson` gem by Speedyrails, super awesome
+rails managed hosting solution.
+
+Among the modifications done or planed are:
+
+* Remove blankslate warning in ruby 1.9.3+. DONE.
+* Don't automtically require files, but load only what is needed. DONE.
+* Change HTTP library to faraday to allow middlewares. PLANED.
+* Allow block configuration (log, middlewares, etc). PLANED.
 
 ## Client: Quick Start
     require 'sr/jimson'
