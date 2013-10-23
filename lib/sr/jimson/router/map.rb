@@ -1,4 +1,4 @@
-module Jimson
+module Sr::Jimson
   class Router
 
     #
@@ -28,9 +28,9 @@ module Jimson
           @routes[ns.to_s] = handler
         else
           # passed a block for nested namespacing
-          map = Jimson::Router::Map.new
+          map = Sr::Jimson::Router::Map.new
           @routes[ns.to_s] = map
-          map.instance_eval &block
+          map.instance_eval(&block)
         end
       end
 
@@ -41,7 +41,7 @@ module Jimson
         parts = method.split('.')
         ns = (method.index('.') == nil ? '' : parts.first)
         handler = @routes[ns]
-        if handler.is_a?(Jimson::Router::Map)
+        if handler.is_a?(Sr::Jimson::Router::Map)
           return handler.handler_for_method(parts[1..-1].join('.'))
         end
         handler
@@ -61,7 +61,7 @@ module Jimson
         arr = @routes.keys.map do |ns|
           prefix = (ns == '' ? '' : "#{ns}.")
           handler = @routes[ns]
-          if handler.is_a?(Jimson::Router::Map)
+          if handler.is_a?(Sr::Jimson::Router::Map)
             handler.jimson_methods
           else
             handler.class.jimson_exposed_methods.map { |method| prefix + method }
