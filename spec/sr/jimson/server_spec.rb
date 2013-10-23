@@ -1,17 +1,17 @@
 require 'spec_helper'
 require 'rack/test'
 
-module Jimson
+module Sr::Jimson
     describe Server do
       include Rack::Test::Methods
 
       class TestHandler
-        extend Jimson::Handler
+        extend Sr::Jimson::Handler
 
         def subtract(a, b = nil)
           if a.is_a?(Hash)
             return a['minuend'] - a['subtrahend']
-          else 
+          else
             return a - b
           end
         end
@@ -42,7 +42,7 @@ module Jimson
       end
 
       class OtherHandler
-        extend Jimson::Handler
+        extend Sr::Jimson::Handler
 
         def multiply(a,b)
           a * b
@@ -71,7 +71,7 @@ module Jimson
       def post_json(hash)
         post '/', MultiJson.encode(hash), {'Content-Type' => 'application/json'}
       end
-      
+
       before(:each) do
         @url = SPEC_URL
       end
@@ -148,7 +148,7 @@ module Jimson
                     'id'      => 1
                   }
             post_json(req)
-            
+
             last_response.should be_ok
             resp = MultiJson.decode(last_response.body)
             resp.should == {
@@ -318,7 +318,7 @@ module Jimson
                   }
             post_json(req)
             resp = MultiJson.decode(last_response.body)
-            resp.should == INVALID_RESPONSE_EXPECTATION 
+            resp.should == INVALID_RESPONSE_EXPECTATION
           end
         end
 
@@ -336,7 +336,7 @@ module Jimson
             req = [1,2]
             post_json(req)
             resp = MultiJson.decode(last_response.body)
-            resp.should == [INVALID_RESPONSE_EXPECTATION, INVALID_RESPONSE_EXPECTATION] 
+            resp.should == [INVALID_RESPONSE_EXPECTATION, INVALID_RESPONSE_EXPECTATION]
           end
         end
       end
@@ -350,7 +350,7 @@ module Jimson
                       {'jsonrpc' => '2.0', 'method' => 'subtract', 'params' => [42,23], 'id' => '2'},
                       {'foo' => 'boo'},
                       {'jsonrpc' => '2.0', 'method' => 'foo.get', 'params' => {'name' => 'myself'}, 'id' => '5'},
-                      {'jsonrpc' => '2.0', 'method' => 'get_data', 'id' => '9'} 
+                      {'jsonrpc' => '2.0', 'method' => 'get_data', 'id' => '9'}
                    ]
             post_json(reqs)
             resp = MultiJson.decode(last_response.body)

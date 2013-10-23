@@ -1,6 +1,6 @@
-module Jimson
+module Sr::Jimson
   module Handler
-    
+
     def jimson_default_methods
       self.instance_methods.map(&:to_s) - Object.methods.map(&:to_s)
     end

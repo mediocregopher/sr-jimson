@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-module Jimson
+module Sr::Jimson
   describe Client do
     BOILERPLATE = {'jsonrpc' => '2.0', 'id' => 1}
 
     before(:each) do
-      @resp_mock = mock('http_response')
-      ClientHelper.stub!(:make_id).and_return(1)
+      @resp_mock = double('http_response')
+      ClientHelper.stub(:make_id).and_return(1)
     end
 
     after(:each) do
@@ -14,11 +14,11 @@ module Jimson
 
     describe "hidden methods" do
       it "should reveal inspect" do
-        Client.new(SPEC_URL).inspect.should match /Jimson::Client/
+        Client.new(SPEC_URL).inspect.should match /Sr::Jimson::Client/
       end
 
       it "should reveal to_s" do
-        Client.new(SPEC_URL).to_s.should match /Jimson::Client/
+        Client.new(SPEC_URL).to_s.should match /Sr::Jimson::Client/
       end
     end
 
@@ -138,7 +138,7 @@ module Jimson
           {"jsonrpc" => "2.0", "method" => "sum", "params" => [1,2,4], "id" => "1"},
           {"jsonrpc" => "2.0", "method" => "subtract", "params" => [42,23], "id" => "2"},
           {"jsonrpc" => "2.0", "method" => "foo_get", "params" => [{"name" => "myself"}], "id" => "5"},
-          {"jsonrpc" => "2.0", "method" => "get_data", "id" => "9"} 
+          {"jsonrpc" => "2.0", "method" => "get_data", "id" => "9"}
         ])
 
         response = MultiJson.encode([
@@ -148,13 +148,13 @@ module Jimson
           {"jsonrpc" => "2.0", "result" => ["hello", 5], "id" => "9"}
         ])
 
-        ClientHelper.stub!(:make_id).and_return('1', '2', '5', '9')
+        ClientHelper.stub(:make_id).and_return('1', '2', '5', '9')
         RestClient.should_receive(:post).with(SPEC_URL, batch, {:content_type => 'application/json'}).and_return(@resp_mock)
         @resp_mock.should_receive(:body).at_least(:once).and_return(response)
         client = Client.new(SPEC_URL)
 
         sum = subtract = foo = data = nil
-        Jimson::Client.batch(client) do |batch|
+        Sr::Jimson::Client.batch(client) do |batch|
           sum = batch.sum(1,2,4)
           subtract = batch.subtract(42,23)
           foo = batch.foo_get('name' => 'myself')
@@ -176,13 +176,13 @@ module Jimson
     end
 
     describe "error handling" do
-      context "when an error occurs in the Jimson::Client code" do
-        it "tags the raised exception with Jimson::Client::Error" do
+      context "when an error occurs in the Sr::Jimson::Client code" do
+        it "tags the raised exception with Sr::Jimson::Client::Error" do
           client_helper = ClientHelper.new(SPEC_URL)
-          ClientHelper.stub!(:new).and_return(client_helper)
+          ClientHelper.stub(:new).and_return(client_helper)
           client = Client.new(SPEC_URL)
-          client_helper.stub!(:send_single_request).and_raise "intentional error"
-          lambda { client.foo }.should raise_error(Jimson::Client::Error)
+          client_helper.stub(:send_single_request).and_raise "intentional error"
+          lambda { client.foo }.should raise_error(Sr::Jimson::Client::Error)
         end
       end
     end

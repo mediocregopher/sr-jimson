@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-module Jimson
+module Sr::Jimson
   describe Handler do
 
     class FooHandler
-      extend Jimson::Handler
+      extend Sr::Jimson::Handler
 
       jimson_expose :to_s, :bye
 
@@ -59,4 +59,3 @@ module Jimson
 
   end
 end
-

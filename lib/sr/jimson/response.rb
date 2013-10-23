@@ -1,4 +1,4 @@
-module Jimson
+module Sr::Jimson
   class Response
     attr_accessor :result, :error, :id
 

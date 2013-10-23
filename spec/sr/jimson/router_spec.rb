@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-module Jimson
+module Sr::Jimson
   describe Router do
 
     let(:router) { Router.new }
 
     class RouterFooHandler
-      extend Jimson::Handler
+      extend Sr::Jimson::Handler
 
       def hi
         'hi'
@@ -14,17 +14,17 @@ module Jimson
     end
 
     class RouterBarHandler
-      extend Jimson::Handler
+      extend Sr::Jimson::Handler
 
-      def bye 
+      def bye
         'bye'
       end
     end
 
     class RouterBazHandler
-      extend Jimson::Handler
+      extend Sr::Jimson::Handler
 
-      def meh 
+      def meh
         'mehkayla'
       end
     end

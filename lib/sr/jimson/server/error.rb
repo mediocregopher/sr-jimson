@@ -1,4 +1,4 @@
-module Jimson
+module Sr::Jimson
   class Server
     class Error < StandardError
       attr_accessor :code, :message
@@ -55,12 +55,12 @@ module Jimson
       end
 
       CODES = {
-                -32700 => ParseError,
-                -32600 => InvalidRequest,
-                -32601 => MethodNotFound,
-                -32602 => InvalidParams,
-                -32603 => InternalError
-              }
+        -32700 => ParseError,
+        -32600 => InvalidRequest,
+        -32601 => MethodNotFound,
+        -32602 => InvalidParams,
+        -32603 => InternalError
+      }
     end
   end
 end
