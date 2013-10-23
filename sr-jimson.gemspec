@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["chris@chriskite.com", "calas@qvitta.net"]
   spec.description   = %q{Speedyrails fork of jimson JSON-RPC 2.0 client and server}
   spec.summary       = %q{JSON-RPC 2.0 client and server}
-  spec.homepage      = "http://www.github.com/speedyrails/jimson"
+  spec.homepage      = "http://www.github.com/speedyrails/sr-jimson"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
