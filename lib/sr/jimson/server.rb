@@ -1,3 +1,4 @@
+require 'logger'
 require 'rack'
 require 'rack/request'
 require 'rack/response'
@@ -46,6 +47,7 @@ module Sr::Jimson
     # * :port - the port to listen on
     # * :server - the rack handler to use, e.g. 'webrick' or 'thin'
     # * :show_errors - true or false, send backtraces in error responses?
+    # * :logger - optional logger to log errors to
     #
     # Remaining options are forwarded to the underlying Rack server.
     #
@@ -63,7 +65,13 @@ module Sr::Jimson
       @host = opts.delete(:host) || '0.0.0.0'
       @port = opts.delete(:port) || 8999
       @show_errors = opts.delete(:show_errors) || false
+      @logger = opts.delete(:logger) || nil
       @opts = opts
+    end
+
+    def _log(severity, message)
+      return if not @logger
+      @logger.log(severity, message)
     end
 
     #
@@ -194,6 +202,11 @@ module Sr::Jimson
     end
 
     def error_response(error, request = nil)
+      if error.is_a? Server::Error::InternalError
+        _log Logger::ERROR, "internal error: #{error} - #{error.backtrace}"
+      else
+        _log Logger::WARN, "client error: #{error}"
+      end
       resp = {
                'jsonrpc' => JSON_RPC_VERSION,
                'error'   => error.to_h,
