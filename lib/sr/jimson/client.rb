@@ -25,7 +25,7 @@ module Sr::Jimson
       resp = send_single_request(sym.to_s, args)
 
       begin
-        data = MultiJson.decode(resp)
+        data = MultiJson.load(resp, :symbolize_keys => true)
       rescue
         raise Client::Error::InvalidJSON.new(resp)
       end
@@ -39,7 +39,7 @@ module Sr::Jimson
 
     def send_single_request(method, args)
       namespaced_method = @namespace.nil? ? method : "#@namespace#{method}"
-      post_data = MultiJson.encode({
+      post_data = MultiJson.dump({
         'jsonrpc' => JSON_RPC_VERSION,
         'method'  => namespaced_method,
         'params'  => args,
@@ -54,7 +54,7 @@ module Sr::Jimson
     end
 
     def send_batch_request(batch)
-      post_data = MultiJson.encode(batch)
+      post_data = MultiJson.dump(batch)
       resp = RestClient.post(@url, post_data, @opts)
       if resp.nil? || resp.body.nil? || resp.body.empty?
         raise Client::Error::InvalidResponse.new
@@ -74,30 +74,30 @@ module Sr::Jimson
     def process_single_response(data)
       raise Client::Error::InvalidResponse.new if !valid_response?(data)
 
-      if !!data['error']
-        code = data['error']['code']
-        msg = data['error']['message']
+      if !!data[:error]
+        code = data[:error][:code]
+        msg = data[:error][:message]
         raise Client::Error::ServerError.new(code, msg)
       end
 
-      return data['result']
+      return data[:result]
     end
 
     def valid_response?(data)
       return false if !data.is_a?(Hash)
 
-      return false if data['jsonrpc'] != JSON_RPC_VERSION
+      return false if data[:jsonrpc] != JSON_RPC_VERSION
 
-      return false if !data.has_key?('id')
+      return false if !data.has_key?(:id)
 
-      return false if data.has_key?('error') && data.has_key?('result')
+      return false if data.has_key?(:error) && data.has_key?(:result)
 
-      if data.has_key?('error')
-        if !data['error'].is_a?(Hash) || !data['error'].has_key?('code') || !data['error'].has_key?('message')
+      if data.has_key?(:error)
+        if !data[:error].is_a?(Hash) || !data[:error].has_key?(:code) || !data[:error].has_key?(:message)
           return false
         end
 
-        if !data['error']['code'].is_a?(Fixnum) || !data['error']['message'].is_a?(String)
+        if !data[:error][:code].is_a?(Fixnum) || !data[:error][:message].is_a?(String)
           return false
         end
       end
@@ -120,7 +120,7 @@ module Sr::Jimson
       response = send_batch_request(batch)
 
       begin
-        responses = MultiJson.decode(response)
+        responses = MultiJson.load(response, :symbolize_keys)
       rescue
         raise Client::Error::InvalidJSON.new(json)
       end

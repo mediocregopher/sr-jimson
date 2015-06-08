@@ -109,7 +109,7 @@ module Sr::Jimson
 
       return nil if response.nil? || (response.respond_to?(:empty?) && response.empty?)
 
-      MultiJson.encode(response)
+      MultiJson.dump(response)
     end
 
     def handle_request(request)
@@ -128,12 +128,12 @@ module Sr::Jimson
     end
 
     def validate_request(request)
-      required_keys = %w(jsonrpc method)
+      required_keys = [:jsonrpc, :method]
       required_types = {
-                         'jsonrpc' => [String],
-                         'method'  => [String],
-                         'params'  => [Hash, Array],
-                         'id'      => [String, Fixnum, Bignum, NilClass]
+                         :jsonrpc => [String],
+                         :method  => [String],
+                         :params  => [Hash, Array],
+                         :id      => [String, Fixnum, Bignum, NilClass]
                        }
 
       return false if !request.is_a?(Hash)
@@ -146,14 +146,14 @@ module Sr::Jimson
         return false if request.has_key?(key) && !types.any? { |type| request[key].is_a?(type) }
       end
 
-      return false if request['jsonrpc'] != JSON_RPC_VERSION
+      return false if request[:jsonrpc] != JSON_RPC_VERSION
 
       true
     end
 
     def create_response(request)
-      method = request['method']
-      params = request['params']
+      method = request[:method]
+      params = request[:params]
       result = dispatch_request(method, params)
 
       response = success_response(request, result)
@@ -161,7 +161,7 @@ module Sr::Jimson
       # A Notification is a Request object without an "id" member.
       # The Server MUST NOT reply to a Notification, including those
       # that are within a batch request.
-      response = nil if !request.has_key?('id')
+      response = nil if !request.has_key?(:id)
 
       return response
 
@@ -198,10 +198,10 @@ module Sr::Jimson
                'jsonrpc' => JSON_RPC_VERSION,
                'error'   => error.to_h,
              }
-      if !!request && request.has_key?('id')
-        resp['id'] = request['id']
+      if !!request && request.has_key?(:id)
+        resp[:id] = request[:id]
       else
-        resp['id'] = nil
+        resp[:id] = nil
       end
 
       resp
@@ -211,12 +211,12 @@ module Sr::Jimson
       {
         'jsonrpc' => JSON_RPC_VERSION,
         'result'  => result,
-        'id'      => request['id']
+        'id'      => request[:id]
       }
     end
 
     def parse_request(post)
-      MultiJson.decode(post)
+      MultiJson.load(post, :symbolize_keys => true)
     rescue
       raise Server::Error::ParseError.new
     end
