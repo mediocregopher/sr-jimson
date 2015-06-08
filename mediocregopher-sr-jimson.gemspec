@@ -4,13 +4,13 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'sr/jimson'
 
 Gem::Specification.new do |spec|
-  spec.name          = "sr-jimson"
+  spec.name          = "mediocregopher-sr-jimson"
   spec.version       = Sr::Jimson::VERSION
-  spec.authors       = ["Chris Kite", "Jorge Calás Lozano"]
-  spec.email         = ["chris@chriskite.com", "calas@qvitta.net"]
+  spec.authors       = ["Chris Kite", "Jorge Calás Lozano", "Brian Picciano"]
+  spec.email         = ["chris@chriskite.com", "calas@qvitta.net", "mediocregopher@gmail.com"]
   spec.description   = %q{Speedyrails fork of jimson JSON-RPC 2.0 client and server}
   spec.summary       = %q{JSON-RPC 2.0 client and server}
-  spec.homepage      = "http://www.github.com/speedyrails/sr-jimson"
+  spec.homepage      = "http://www.github.com/mediocregopher/sr-jimson"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
